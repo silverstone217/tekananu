@@ -84,3 +84,31 @@ export const createUser = async (data: NewUserData) => {
     };
   }
 };
+
+export const TestCompCount = async () => {
+  try {
+    const getCount = await prisma.test.findMany();
+    const biggestCount =
+      getCount.length > 0
+        ? getCount.reduce((max, item) => Math.max(max, item.count), 0)
+        : 0;
+
+    const count = await prisma.test.create({
+      data: {
+        count: biggestCount + 1,
+      },
+    });
+    return {
+      count,
+      message: "Test component count updated successfully.",
+      error: false,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      count: null,
+      message: "Failed to update test component count.",
+      error: true,
+    };
+  }
+};

@@ -1,7 +1,8 @@
 import Header from "@/components/home/Header";
-import { Button } from "@/components/ui/button";
+import TestComp from "@/components/testComp";
+// import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
+// import Link from "next/link";
 
 const getUsersLength = async () => {
   const users = await prisma.user.findMany();
@@ -24,9 +25,10 @@ export default async function Home() {
           Nous avons actuellement {usersLength ? usersLength : "rien trouvé"}{" "}
           utilisateurs inscrits.
         </p>
-        <Link href="/path/to/your/page">
+        {/* <Link href="/path/to/your/page">
           <Button>Cliquez ici pour en savoir plus</Button>
-        </Link>
+        </Link> */}
+        <TestComp />
       </div>
     </div>
   );
