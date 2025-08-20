@@ -10,7 +10,7 @@ import LogoComponent from "../LogoComponent";
 const Header = () => {
   return (
     <header
-      className="fixed z-50 top-0 left-0 right-0 h-16 flex items-center 
+      className="fixed z-50 top-0 left-0 right-0 h-14 lg:h-16 flex items-center 
     px-4 shadow-md bg-yellow-950/10 backdrop-blur-2xl"
     >
       <div className="w-full flex items-center justify-between text-sm">

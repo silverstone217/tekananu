@@ -3,12 +3,46 @@ import React from "react";
 const LogoComponent = () => {
   return (
     <div
-      className=" font-bold tracking-tight -skew-y-12 shadow
-        flex flex-col items-center group text-xs text-white
-        w-fit"
+      className="
+        flex flex-col items-center 
+        font-extrabold tracking-tight
+        select-none
+        w-fit
+        h-16
+        justify-center
+      "
+      style={{ transform: "skewY(-12deg)" }}
     >
-      <span className="px-2 bg-yellow-500 text-[15px]">Teka</span>
-      <span className="px-2  bg-yellow-700 text-[15px]">Nanu</span>
+      <span
+        className="
+          bg-gradient-to-r from-yellow-400 to-yellow-600 
+          text-white shadow-md 
+          lg:px-3 px-2 py-0.5 rounded-sm 
+          lg:text-base
+          drop-shadow-sm
+          transition-colors duration-300 ease-in-out
+          cursor-default
+          select-text
+          leading-none
+        "
+      >
+        Teka
+      </span>
+      <span
+        className="
+          bg-gradient-to-r from-yellow-700 to-yellow-900
+          text-white shadow-md 
+          lg:px-3 px-2 py-0.5 rounded-sm 
+          lg:text-base
+          drop-shadow-sm
+          transition-colors duration-300 ease-in-out
+          cursor-default
+          select-text
+          leading-none
+        "
+      >
+        Nanu
+      </span>
     </div>
   );
 };
