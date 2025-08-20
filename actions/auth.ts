@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@/auth";
+import { User } from "@/lib/generated/prisma";
 import { prisma } from "@/lib/prisma";
 import { signupSchema } from "@/schema/auth";
 import { hash } from "bcryptjs";
@@ -22,64 +23,69 @@ export const getUser = async () => {
 
 // new user
 export type NewUserData = z.infer<typeof signupSchema>;
-export const createUser = async (data: NewUserData) => {
+// Type du retour
+type CreateUserResult = {
+  error: boolean;
+  message: string;
+  data: Omit<User, "password"> | null;
+};
+
+export const createUser = async (
+  data: NewUserData
+): Promise<CreateUserResult> => {
   try {
+    // Validation Zod côté serveur
     const validated = signupSchema.safeParse(data);
 
     if (!validated.success) {
-      console.log(validated.error.issues, "erreurs survenues");
       const errorsM = validated.error.issues
         .map((issue) => issue.message)
         .join(" ");
-      return {
-        error: true,
-        message: errorsM,
-        // errors: validated.error.issues, // Important: Retourner les erreurs Zod
-        data: null,
-      };
+      return { error: true, message: errorsM, data: null };
     }
 
     const { email, password, name, phone } = validated.data;
 
-    const isUserExists = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
-
-    if (isUserExists) {
+    // Vérification utilisateur existant
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
       return {
-        message: "Un utilisateur avec cet email existe déjà.",
         error: true,
+        message: "Un utilisateur avec cet email existe déjà.",
         data: null,
       };
     }
 
+    // Hash du mot de passe
     const hashedPassword = await hash(password, 10);
 
+    // Création utilisateur
     const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        name,
-        phone,
-      },
+      data: { email, password: hashedPassword, name, phone },
     });
 
+    // Retirer le mot de passe pour le retour
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: pass, ...rest } = user;
 
     return {
-      data: rest,
       error: false,
-      message: "Bienvenue" + " " + rest.name + " ! Connectez-vous maintenant!",
+      message: `Bienvenue ${rest.name} ! Connectez-vous maintenant!`,
+      data: rest,
     };
-  } catch (error) {
-    console.log(error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error("Erreur createUser:", error);
+
+    // Gestion erreur Prisma spécifique (ex: violation contrainte unique)
+    if (error.code === "P2002") {
+      return { error: true, message: "Email déjà utilisé", data: null };
+    }
+
     return {
+      error: true,
       message:
         "Une erreur s'est produite lors de la création de l'utilisateur.",
-      error: true,
       data: null,
     };
   }

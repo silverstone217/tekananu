@@ -31,6 +31,7 @@ const SignForm = () => {
 
       if (!phoneRegex.test(phone)) {
         toast.error("Le numéro de téléphone doit contenir 9 chiffres.");
+        setLoading(false); // éviter de rester bloqué sur loading
         return;
       }
 
