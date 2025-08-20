@@ -1,8 +1,16 @@
 import Header from "@/components/home/Header";
 import { Button } from "@/components/ui/button";
+import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 
-export default function Home() {
+const getUsersLength = async () => {
+  const users = await prisma.user.findMany();
+  return users.length;
+};
+
+export default async function Home() {
+  const usersLength = await getUsersLength();
+
   return (
     <div className="pt-16 lg:pt-18">
       <Header />
@@ -11,6 +19,10 @@ export default function Home() {
         <p>
           Votre solution tout-en-un pour acheter et vendre des produits de
           seconde main.
+        </p>
+        <p>
+          Nous avons actuellement {usersLength ? usersLength : "rien trouvé"}{" "}
+          utilisateurs inscrits.
         </p>
         <Link href="/path/to/your/page">
           <Button>Cliquez ici pour en savoir plus</Button>
