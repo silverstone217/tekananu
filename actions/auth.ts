@@ -1,6 +1,6 @@
 "use server";
 
-import { auth, signIn } from "@/auth";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { signupSchema } from "@/schema/auth";
 import { hash } from "bcryptjs";
@@ -66,13 +66,8 @@ export const createUser = async (data: NewUserData) => {
       },
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: pass, ...rest } = user;
-
-    await signIn("credentials", {
-      email,
-      password: pass,
-      redirect: false,
-    });
 
     return {
       data: rest,
